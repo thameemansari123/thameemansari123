@@ -1,0 +1,120 @@
+const { createStore, bindActionCreators } = Redux;
+const { Provider, connect } = ReactRedux;
+
+const initialState = [
+  {
+    name: "NICE TO MEET YOU MAHADEV",
+    id: uuid.v4()
+  },
+  {
+    name: "PLEASE ACCEPT MY ASSIGNMENT",
+    id: uuid.v4()
+  },
+  {
+    name: "GIVE ME A CHANCE, I WILL DO BETTER",
+    id: uuid.v4()
+  }
+];
+
+class App extends React.Component {
+  render() {
+    return (
+      <section className="section">
+        <h1 className="title">Add Your Contacts</h1>
+        <AddContact addContact={this.props.addContact} />
+        <Contacts
+          contacts={this.props.contacts}
+        />
+      </section>
+    );
+  }
+}
+
+const Contacts = (props) => {
+    return (
+      <ul>
+        {props.contacts.map((contact, id) => (
+          <div key={id} className="box">
+            <p>{contact.name}</p>
+          </div>
+        ))}
+      </ul>
+    );
+}
+
+class AddContact extends React.Component {
+  constructor(props) {
+    super(props);
+    this.textInput = React.createRef();
+  }
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    this.props.addContact(this.textInput.current.value);
+  };
+  render() {
+    return (
+      <div className="box">
+        
+          <form onSubmit={this.handleSubmit}>
+            <div className="field">
+            <label className="label">Name </label>
+            <div className="control">
+              <input
+                className="input"
+                type="text"
+                ref={this.textInput}
+                placeholder="MR.MAHADEV"
+              />
+            </div>
+            </div>
+            <button type="submit" className="button">
+              Add contact
+            </button>
+          </form>
+        
+      </div>
+    );
+  }
+}
+
+const actions = {
+  addContact: name => {
+    return {
+      type: "ADD_CONTACT",
+      id: uuid.v4(),
+      name
+    };
+  }
+};
+
+const reducer = (state = {}, action) => {
+  switch (action.type) {
+    case "ADD_CONTACT":
+      const { name } = action;
+      return [{ name }, ...state];
+    default:
+      return state;
+  }
+}
+
+
+const AppContainer = connect(
+  function mapStateToProps(state) {
+    return {
+      contacts: state
+    };
+  },
+  function mapDispatchToProps(dispatch) {
+    return bindActionCreators(actions, dispatch);
+  }
+)(App);
+
+const store = createStore(reducer, initialState);
+
+ReactDOM.render(
+  <Provider store={store}>
+    <AppContainer />
+  </Provider>,
+  document.getElementById("root")
+);
