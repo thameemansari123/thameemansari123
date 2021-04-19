@@ -1,0 +1,15 @@
+body {
+  height: 100vh;
+  margin: 0;
+  display: grid;
+  place-items: center;
+}
+.box {
+  width: 300px;
+  background-color: #f18973;
+  color: white;
+  h1 {
+    font-size: 20px;
+    margin: 0 0 1rem 0;
+  }
+}
